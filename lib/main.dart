@@ -210,9 +210,15 @@ class TaskListItem extends StatelessWidget {
     return Card(
       elevation: 3.0,
       child: ListTile(
-        title: Text(task.title),
+        title: Text(
+          task.title,
+          style: task.isComplete
+              ? TextStyle(decoration: TextDecoration.lineThrough)
+              : TextStyle(),
+        ),
         trailing: Checkbox(
           value: task.isComplete,
+          activeColor: primaryColor,
           onChanged: (value) {
             Provider.of<Tasks>(context, listen: false)
                 .updateToDo(task: task, complete: value);
