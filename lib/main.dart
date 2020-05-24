@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:provider/provider.dart';
+import 'Task.dart';
 
 void main() {
   runApp(
@@ -10,32 +11,6 @@ void main() {
       child: MyApp(),
     ),
   );
-}
-
-class Task {
-  String _title;
-  bool _complete;
-
-  Task({String title, bool complete}) {
-    this._title = title;
-    this._complete = complete;
-  }
-
-  get title {
-    return _title;
-  }
-
-  set title(String title) {
-    this._title = title;
-  }
-
-  get isComplete {
-    return _complete;
-  }
-
-  set complete(bool complete) {
-    this._complete = complete;
-  }
 }
 
 class Tasks with ChangeNotifier {
@@ -220,21 +195,32 @@ class TaskList extends StatelessWidget {
         padding: EdgeInsets.symmetric(horizontal: 10),
         children: <Widget>[
           ...this.tasks.map((task) {
-            return Card(
-              elevation: 3.0,
-              child: ListTile(
-                title: Text(task.title),
-                trailing: Checkbox(
-                  value: task.isComplete,
-                  onChanged: (value) {
-                    Provider.of<Tasks>(context, listen: false)
-                        .updateToDo(task: task, complete: value);
-                  },
-                ),
-              ),
-            );
+            return TaskListItem(task: task);
           })
         ],
+      ),
+    );
+  }
+}
+
+class TaskListItem extends StatelessWidget {
+  const TaskListItem({Key key, this.task}) : super(key: key);
+
+  final Task task;
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 3.0,
+      child: ListTile(
+        title: Text(task.title),
+        trailing: Checkbox(
+          value: task.isComplete,
+          onChanged: (value) {
+            Provider.of<Tasks>(context, listen: false)
+                .updateToDo(task: task, complete: value);
+          },
+        ),
       ),
     );
   }
