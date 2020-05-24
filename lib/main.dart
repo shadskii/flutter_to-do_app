@@ -14,6 +14,9 @@ void main() {
   );
 }
 
+const primaryColor = Color(0xff233BB1);
+const secondaryColor = Color(0xff39405B);
+
 class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
@@ -21,7 +24,6 @@ class MyApp extends StatelessWidget {
     SystemChrome.setSystemUIOverlayStyle(SystemUiOverlayStyle.dark);
     return CupertinoApp(
       title: 'To-Do List',
-      // theme: ThemeData(buttonColor: Colors.blueGrey),
       home: HomeScreen(),
     );
   }
@@ -43,7 +45,6 @@ class HomeScreen extends StatelessWidget {
                 children: <Widget>[
                   Container(
                     height: size.height * .10,
-                    // color: Colors.blue[600],
                     margin: EdgeInsets.only(top: 40),
                     padding: EdgeInsets.symmetric(horizontal: 30),
                     child: Column(
@@ -60,7 +61,7 @@ class HomeScreen extends StatelessWidget {
                                   .headline4
                                   .copyWith(fontWeight: FontWeight.w900),
                             ),
-                            Icon(Icons.search)
+                            Icon(Icons.search, color: secondaryColor)
                           ],
                         ),
                       ],
@@ -80,6 +81,8 @@ class HomeScreen extends StatelessWidget {
                 width: size.width,
                 child: Center(
                   child: FloatingActionButton(
+                    backgroundColor: primaryColor,
+                    elevation: 2.0,
                     tooltip: 'Add To-Do',
                     child: Icon(Icons.add),
                     onPressed: () {
@@ -134,7 +137,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                   // Navigate back to first route when tapped.
                   Navigator.pop(context);
                 },
-                icon: Icon(CupertinoIcons.clear),
+                icon: Icon(CupertinoIcons.clear, color: secondaryColor),
                 iconSize: 40,
               ),
               CupertinoTextField(
@@ -143,6 +146,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 placeholder: 'Write task here',
                 padding: EdgeInsets.only(left: 20),
                 decoration: null,
+                cursorColor: secondaryColor,
                 style: Theme.of(context)
                     .textTheme
                     .headline5
@@ -161,7 +165,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
                 .addToDo(title: myController.text, complete: false);
             Navigator.pop(context);
           },
-          color: CupertinoColors.activeBlue,
+          color: primaryColor,
           child: const Text(
             'Add',
             style: TextStyle(fontSize: 20, color: CupertinoColors.white),
