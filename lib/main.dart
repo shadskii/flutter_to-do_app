@@ -1,9 +1,58 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(MyApp());
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => new Tasks(),
+      child: MyApp(),
+    ),
+  );
+}
+
+class Task {
+  String _title;
+  bool _complete;
+
+  Task({String title, bool complete}) {
+    this._title = title;
+    this._complete = complete;
+  }
+
+  get title {
+    return _title;
+  }
+
+  set title(String title) {
+    this._title = title;
+  }
+
+  get isComplete {
+    return _complete;
+  }
+
+  set complete(bool complete) {
+    this._complete = complete;
+  }
+}
+
+class Tasks with ChangeNotifier {
+  List<Task> all = new List();
+
+  void addToDo({String title, bool complete}) {
+    all.add(
+      new Task(title: title, complete: complete),
+    );
+    notifyListeners();
+  }
+
+  void updateToDo({Task task, bool complete}) {
+    int taskIndex = all.indexOf(task);
+    all[taskIndex].complete = complete;
+    notifyListeners();
+  }
 }
 
 class MyApp extends StatelessWidget {
@@ -19,13 +68,7 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class HomeScreen extends StatefulWidget {
-  @override
-  _HomeScreenState createState() => _HomeScreenState();
-}
-
-class _HomeScreenState extends State<HomeScreen> {
-  List<String> _todos = new List();
+class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     var size = MediaQuery.of(context).size;
@@ -65,38 +108,26 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   Expanded(
-                    child: ListView(
-                      padding: EdgeInsets.symmetric(horizontal: 10),
-                      children: <Widget>[
-                        ..._todos.map(
-                          (text) => Card(
-                            elevation: 3.0,
-                            child: ListTile(
-                              title: Text(text),
-                              trailing: Checkbox(
-                                value: false,
-                              ),
-                            ),
-                          ),
-                        )
-                      ],
+                    child: Consumer<Tasks>(
+                      builder: (context, tasks, child) => TaskList(
+                        tasks: tasks.all,
+                      ),
                     ),
                   ),
                 ],
               ),
               Positioned(
-                bottom: 20,
+                bottom: 10,
                 width: size.width,
                 child: Center(
                   child: FloatingActionButton(
                     tooltip: 'Add To-Do',
                     child: Icon(Icons.add),
                     onPressed: () {
-                      _addTodo();
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => AddTodoScreen(),
+                          builder: (context) => AddTaskScreen(),
                           fullscreenDialog: true,
                         ),
                       );
@@ -110,15 +141,25 @@ class _HomeScreenState extends State<HomeScreen> {
       ),
     );
   }
-
-  void _addTodo() {
-    setState(() {
-      _todos.add('Hello');
-    });
-  }
 }
 
-class AddTodoScreen extends StatelessWidget {
+class AddTaskScreen extends StatefulWidget {
+  AddTaskScreen({Key key}) : super(key: key);
+
+  @override
+  _AddTaskScreenState createState() => _AddTaskScreenState();
+}
+
+class _AddTaskScreenState extends State<AddTaskScreen> {
+  final myController = TextEditingController();
+
+  @override
+  void dispose() {
+    // Clean up the controller when the widget is disposed.
+    myController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -137,9 +178,11 @@ class AddTodoScreen extends StatelessWidget {
                 iconSize: 40,
               ),
               CupertinoTextField(
+                controller: myController,
                 autofocus: true,
                 placeholder: 'Write task here',
                 padding: EdgeInsets.only(left: 20),
+                decoration: null,
                 style: Theme.of(context)
                     .textTheme
                     .headline5
@@ -151,6 +194,8 @@ class AddTodoScreen extends StatelessWidget {
       ),
       floatingActionButton: RaisedButton(
         onPressed: () {
+          Provider.of<Tasks>(context, listen: false)
+              .addToDo(title: myController.text, complete: false);
           Navigator.pop(context);
         },
         color: CupertinoColors.activeBlue,
@@ -158,6 +203,38 @@ class AddTodoScreen extends StatelessWidget {
           'Add',
           style: TextStyle(fontSize: 20, color: CupertinoColors.white),
         ),
+      ),
+    );
+  }
+}
+
+class TaskList extends StatelessWidget {
+  const TaskList({Key key, this.tasks}) : super(key: key);
+
+  final List<Task> tasks;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      child: ListView(
+        padding: EdgeInsets.symmetric(horizontal: 10),
+        children: <Widget>[
+          ...this.tasks.map((task) {
+            return Card(
+              elevation: 3.0,
+              child: ListTile(
+                title: Text(task.title),
+                trailing: Checkbox(
+                  value: task.isComplete,
+                  onChanged: (value) {
+                    Provider.of<Tasks>(context, listen: false)
+                        .updateToDo(task: task, complete: value);
+                  },
+                ),
+              ),
+            );
+          })
+        ],
       ),
     );
   }
