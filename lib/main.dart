@@ -137,6 +137,7 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
 
   @override
   Widget build(BuildContext context) {
+    var size = MediaQuery.of(context).size;
     return Scaffold(
       body: SafeArea(
         child: Container(
@@ -167,18 +168,23 @@ class _AddTaskScreenState extends State<AddTaskScreen> {
           ),
         ),
       ),
-      floatingActionButton: RaisedButton(
-        onPressed: () {
-          Provider.of<Tasks>(context, listen: false)
-              .addToDo(title: myController.text, complete: false);
-          Navigator.pop(context);
-        },
-        color: CupertinoColors.activeBlue,
-        child: const Text(
-          'Add',
-          style: TextStyle(fontSize: 20, color: CupertinoColors.white),
+      floatingActionButton: Container(
+        width: size.width,
+        padding: EdgeInsets.symmetric(horizontal: 20),
+        child: CupertinoButton(
+          onPressed: () {
+            Provider.of<Tasks>(context, listen: false)
+                .addToDo(title: myController.text, complete: false);
+            Navigator.pop(context);
+          },
+          color: CupertinoColors.activeBlue,
+          child: const Text(
+            'Add',
+            style: TextStyle(fontSize: 20, color: CupertinoColors.white),
+          ),
         ),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
