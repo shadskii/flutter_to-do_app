@@ -15,7 +15,7 @@ void main() {
   );
 }
 
-const primaryColor = Color(0xff233BB1);
+const primaryColor = Color(0xff6fa8dc);
 const secondaryColor = Color(0xff39405B);
 
 class MyApp extends StatelessWidget {
