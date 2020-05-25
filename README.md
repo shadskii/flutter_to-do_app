@@ -1,4 +1,6 @@
-# simple_flutter_app
+# Simple To-Do List
+
+The design is loosely based off of [this dribble](https://dribbble.com/shots/4522954-Daily-Ui-Challenge-042-To-Do-List).
 
 A new Flutter project.
 
