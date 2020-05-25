@@ -41,6 +41,7 @@ class HomeScreen extends StatelessWidget {
       color: Colors.white,
       child: SafeArea(
         child: Scaffold(
+          backgroundColor: Colors.white,
           body: Stack(
             children: <Widget>[
               Column(
