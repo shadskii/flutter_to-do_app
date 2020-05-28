@@ -140,9 +140,11 @@ class TaskList extends StatelessWidget {
                     .copyWith(fontWeight: FontWeight.w900),
               ),
             ),
-          ...this.tasks.map((task) {
-            return TaskListItem(task: task);
-          })
+          ...this.tasks.map(
+            (task) {
+              return TaskListItem(task: task);
+            },
+          ),
         ],
       ),
     );
@@ -183,10 +185,11 @@ class TaskListItem extends StatelessWidget {
       ),
       secondaryActions: <Widget>[
         IconSlideAction(
-          iconWidget: Icon(
-            Icons.delete,
-            color: Colors.red,
-          ),
+          icon: Icons.delete,
+          onTap: () {
+            Provider.of<Tasks>(context, listen: false)
+                .deleteToDo(task: this.task);
+          },
         ),
       ],
     );

@@ -16,4 +16,9 @@ class Tasks with ChangeNotifier {
     all[taskIndex].complete = complete;
     notifyListeners();
   }
+
+  void deleteToDo({Task task}) {
+    all.remove(task);
+    notifyListeners();
+  }
 }
